@@ -13,23 +13,7 @@
                             <v-icon>dashboard</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-content>
-                            <v-list-tile-title>课程列表</v-list-tile-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
-                    <v-list-tile @click="jumpToCreateCourse">
-                        <v-list-tile-action>
-                            <v-icon>expand</v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-content>
-                            <v-list-tile-title>创建课程</v-list-tile-title>
-                        </v-list-tile-content>
-                    </v-list-tile>
-                    <v-list-tile @click="jumpToStudentInfo">
-                        <v-list-tile-action>
-                            <v-icon>info</v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-content>
-                            <v-list-tile-title>个人信息</v-list-tile-title>
+                            <v-list-tile-title>课程审核</v-list-tile-title>
                         </v-list-tile-content>
                     </v-list-tile>
                     <v-list-tile @click="logout">
@@ -59,31 +43,24 @@
 </template>
 
 <script>
-
     export default {
-        name: "mainlayout",
-        data: () => ({
-            drawer: false
-        }),
+        name: "adminlayout",
+     data: () => ({
+         drawer: false
+     }),
 
-        props: {
-            source: String,
+         props: {
+        source: String,
             title:String
+    },
+    methods:{
+        jumpToCourseList(){
+            this.$router.push("/AdminMain")
         },
-        methods:{
-            jumpToCourseList(){
-                this.$router.push("/CourseList")
-            },
-            jumpToCreateCourse(){
-                this.$router.push("/CreateCourse")
-            },
-            logout(){
-                this.$router.push("/")
-            },
-            jumpToStudentInfo(){
-                this.$router.push("/StudentInfo")
-            }
-        }
+        logout(){
+            this.$router.push("/")
+        },
+    }
     }
 </script>
 
