@@ -62,18 +62,19 @@ export default {
     methods: {
         submit: function() {
             const password = this.password;
-            this.axios
-                .post("/api/login", {
-                    username: this.username,
-                    password: password
-                })
-                .then(res => {
-                    if (res.data.status === "success") {
-                        alert("hhh");
-                    } else {
-                        alert(res.data.message);
-                    }
-                });
+            // this.axios
+            //     .post("/api/login", {
+            //         username: this.username,
+            //         password: password
+            //     })
+            //     .then(res => {
+            //         if (res.data.status === "success") {
+            //             alert("hhh");
+            //         } else {
+            //             alert(res.data.message);
+            //         }
+            //     });
+            this.$router.push('/CourseList')
         }
     }
 };

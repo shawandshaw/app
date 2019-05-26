@@ -112,19 +112,20 @@ export default {
         studentSignUP() {
             if (this.$refs.form_student.validate()) {
                 // Native form submission is not yet supported
-                this.axios
-                    .post("/api/register", {
-                        username: this.student.username,
-                        studentNumber: this.student.studentNumber,
-                        password: this.student.password
-                    })
-                    .then(res => {
-                        if (res.data.status === "success") {
-                            alert("注册成功，请前往邮箱认证后即可登录。");
-                        } else {
-                            alert(res.data.message);
-                        }
-                    });
+                // this.axios
+                //     .post("/api/register", {
+                //         username: this.student.username,
+                //         studentNumber: this.student.studentNumber,
+                //         password: this.student.password
+                //     })
+                //     .then(res => {
+                //         if (res.data.status === "success") {
+                //             alert("注册成功，请前往邮箱认证后即可登录。");
+                //         } else {
+                //             alert(res.data.message);
+                //         }
+                //     });
+                this.$router.push('/')
             }
         },
        
