@@ -51,7 +51,7 @@
 </template>
 
 <script>
-// import axios from "@/plugins/axios";
+import Cookies from "js-cookie";
 export default {
     data() {
         return {
@@ -61,20 +61,22 @@ export default {
     },
     methods: {
         submit: function() {
-            const password = this.password;
+            // const password = this.password;
             // this.axios
             //     .post("/api/login", {
             //         username: this.username,
             //         password: password
             //     })
             //     .then(res => {
-            //         if (res.data.status === "success") {
-            //             alert("hhh");
+            //         if (res.data === "SUCCESS") {
+            //             this.$router.push("/CourseList");
+            //             Cookies.set('username',this.username)
             //         } else {
-            //             alert(res.data.message);
+            //             alert(res.data);
             //         }
             //     });
-            this.$router.push('/CourseList')
+                         this.$router.push("/CourseList");
+                        Cookies.set('username',this.username)
         }
     }
 };
