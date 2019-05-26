@@ -4,6 +4,9 @@ import Login from './views/Login.vue'
 import CourseInfo from './views/CourseInfo'
 import CourseList from './views/CourseList'
 import Register from './views/Register'
+import StudentInfo from './views/StudentInfo'
+import AdminLogin from './views/AdminLogin'
+import AdminMain from './views/AdminMain'
 
 Vue.use(Router)
 
@@ -35,6 +38,21 @@ export default new Router({
           path: '/CourseList',
           name: 'CourseList',
           component: CourseList
+      },
+      {
+          path: '/StudentInfo',
+          name: 'StudentInfo',
+          component: StudentInfo
+      },
+      {
+          path: '/AdminLogin',
+          name: 'AdminLogin',
+          component:AdminLogin
+      },
+      {
+          path: '/AdminMain',
+          name: 'AdminMain',
+          component: AdminMain
       },
   ]
 })

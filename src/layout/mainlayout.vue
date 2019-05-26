@@ -16,6 +16,14 @@
                             <v-list-tile-title>课程列表</v-list-tile-title>
                         </v-list-tile-content>
                     </v-list-tile>
+                    <v-list-tile @click="jumpToStudentInfo">
+                        <v-list-tile-action>
+                            <v-icon>info</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-content>
+                            <v-list-tile-title>个人信息</v-list-tile-title>
+                        </v-list-tile-content>
+                    </v-list-tile>
                     <v-list-tile @click="logout">
                         <v-list-tile-action>
                             <v-icon>settings</v-icon>
@@ -61,6 +69,9 @@
             },
             logout(){
 
+            },
+            jumpToStudentInfo(){
+                this.$router.push("/StudentInfo")
             }
         }
     }
