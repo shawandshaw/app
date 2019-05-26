@@ -5,8 +5,8 @@ import CourseInfo from './views/CourseInfo'
 import CourseList from './views/CourseList'
 import Register from './views/Register'
 import StudentInfo from './views/StudentInfo'
-import AdminLogin from './views/AdminLogin'
 import AdminMain from './views/AdminMain'
+import CreateCourse from './views/CreateCourse'
 
 Vue.use(Router)
 
@@ -45,14 +45,14 @@ export default new Router({
           component: StudentInfo
       },
       {
-          path: '/AdminLogin',
-          name: 'AdminLogin',
-          component:AdminLogin
-      },
-      {
           path: '/AdminMain',
           name: 'AdminMain',
           component: AdminMain
+      },
+      {
+          path: '/CreateCourse',
+          name: 'CreateCourse',
+          component: CreateCourse
       },
   ]
 })
