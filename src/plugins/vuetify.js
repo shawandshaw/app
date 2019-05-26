@@ -1,9 +1,12 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib'
+import Vuetify, { VLayout } from 'vuetify/lib'
 import 'vuetify/src/stylus/app.styl'
 import colors from 'vuetify/es5/util/colors'
 
 Vue.use(Vuetify, {
+    components: {
+        VLayout
+    },
   iconfont: 'md',
   theme: {
     primary: '#121212', // a color that is not in the material colors palette
