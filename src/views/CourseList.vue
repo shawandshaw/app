@@ -56,10 +56,6 @@
                                         <v-list-tile-content class="align-end">{{ props.item.teachername }}</v-list-tile-content>
                                     </v-list-tile>
                                     <v-list-tile>
-                                        <v-list-tile-content>推荐度:</v-list-tile-content>
-                                        <v-list-tile-content class="align-end">{{ props.item.avg }}</v-list-tile-content>
-                                    </v-list-tile>
-                                    <v-list-tile>
                                         <v-list-tile-content>给分情况:</v-list-tile-content>
                                         <v-list-tile-content class="align-end">{{ props.item.scorelist[0] }}</v-list-tile-content>
                                     </v-list-tile>

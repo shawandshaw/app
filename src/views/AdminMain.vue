@@ -16,7 +16,7 @@
                     </v-card-title>
 
                     <v-card-text>
-                        课程编号：{{items[loc].ID}}
+                        课程编号：{{items[loc].id}}
                         课程名称：{{items[loc].name}}
                         教师姓名：{{items[loc].teacherName}}
                         </v-card-text>
@@ -50,7 +50,7 @@
                             <template v-for="(item, index) in items">
                                 <v-list-tile :key="index" avatar ripple @click="handleClick(index)">
                                     <v-list-tile-content>
-                                        <v-list-tile-title>课程编码：{{ item.ID }} 课程名称：{{ item.name }} 教师姓名：{{ item.teacherName }}</v-list-tile-title>
+                                        <v-list-tile-title>课程编码：{{ item.id }} 课程名称：{{ item.name }} 教师姓名：{{ item.teacherName }}</v-list-tile-title>
                                     </v-list-tile-content>
                                 </v-list-tile>
                                 <v-divider v-if="index + 1 < items.length" :key="`divider-${index}`"></v-divider>
@@ -73,23 +73,23 @@
             return {
                 items: [
                     {
-                        ID: '123321',
+                        id: '123321',
                         name: '微积分',
                         teacherName: "张宇杰"
                     },
                     {
-                        ID: '123324',
+                        id: '123324',
                         name: '离散数学',
                         teacherName: "张宇杰"
                     },
                     {
-                        ID: '123325',
+                        id: '123325',
                         name: '线性代数',
                         teacherName: "张宇杰"
                     }
                 ],
                 dialog: false,
-                loc:-1
+                loc:0
             }
         },
         methods:{
