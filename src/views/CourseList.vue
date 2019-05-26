@@ -102,7 +102,7 @@ import Cookies from "js-cookie";
                 }
             })
              .then(res => {
-                        if (res.data.length) {
+                        if (res.data.length>=0) {
                             this.courses=res.data;
                             this.sort()
                         } else {

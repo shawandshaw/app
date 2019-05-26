@@ -8,7 +8,7 @@
                             <v-card-title>
                                 <h4>{{ courseInfo.name }}</h4>
                                 <v-spacer></v-spacer>
-                                <v-btn flat @click="courseInfo.collect?collect():cancelCollect()">
+                                <v-btn flat @click="courseInfo.collect?cancelCollect():collect()">
                                     <v-icon>star</v-icon>
                                     <h4>{{courseInfo.collect?'取消收藏':'收藏'}}</h4>
                                 </v-btn>
@@ -33,31 +33,31 @@
                                                 <v-list-tile-content>给分情况:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scorelist[0] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[0] }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>知识深度:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scorelist[1] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[1] }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>课堂氛围:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scorelist[2] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[2] }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>作业数量:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scorelist[3] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[3] }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>考试难度:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scorelist[4] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[4] }}</v-list-tile-content>
                                             </v-list-tile>
                                         </v-list>
                                     </v-flex>
@@ -133,7 +133,7 @@
                                                     @click="dialog=true;originComment=reply"
                                                 >
                                                     <v-list-tile-content>
-                                                        <v-list-tile-title>{{reply.commenter}}回复{{reply.answerTo}}@{{reply.time}}</v-list-tile-title>
+                                                        <v-list-tile-title>{{reply.commenter}}回复{{originComments.find(c=>c.id==reply.answerTo).commenter}}@{{reply.time}}</v-list-tile-title>
                                                         <v-list-tile-sub-title>{{reply.content}}</v-list-tile-sub-title>
                                                     </v-list-tile-content>
 
@@ -164,7 +164,7 @@
             <v-dialog v-model="dialog" width="500">
                 <v-card>
                     <v-card-title v-if="originComment.content">回复评论</v-card-title>
-                    <v-card-title v-else>评论课程{{courseInfo.CourseID}}</v-card-title>
+                    <v-card-title v-else>评论课程{{courseInfo.name}}</v-card-title>
                     <v-list-tile v-if="originComment.content">
                         <v-list-tile-content>
                             <v-list-tile-title>{{originComment.commenter}}@{{originComment.time}}</v-list-tile-title>
@@ -212,44 +212,39 @@
 <script>
 import mainlayout from "../layout/mainlayout";
 import Cookies from "js-cookie";
+import { constants } from "crypto";
+import { copyFile } from "fs";
 export default {
     name: "CourseInfo",
     components: { mainlayout },
     mounted() {
-        let myChart = this.$echarts.init(document.getElementById("card"));
-        myChart.setOption({
-            radar: {
-                // shape: 'circle',
-                name: {
-                    textStyle: {
-                        color: "#fff",
-                        backgroundColor: "#999",
-                        borderRadius: 3,
-                        padding: [3, 5]
-                    }
-                },
-                indicator: [
-                    { name: "给分情况", max: 100 },
-                    { name: "知识深度", max: 100 },
-                    { name: "课堂氛围", max: 100 },
-                    { name: "作业数量", max: 100 },
-                    { name: "考试难度", max: 100 }
-                ]
-            },
-            series: [
-                {
-                    name: "课程信息",
-                    type: "radar",
-                    // areaStyle: {normal: {}},
-                    data: [
-                        {
-                            value: this.courseInfo.scorelist,
-                            name: "五维分布"
-                        }
-                    ]
+        this.setChart();
+    },
+    created() {
+        this.axios
+            .get("/api/getCourseById", {
+                params: {
+                    id: this.CourseID,
+                    username: Cookies.get("username")
                 }
-            ]
-        });
+            })
+            .then(res => {
+                if (res.data) this.courseInfo = res.data;
+                this.setChart();
+            });
+        this.axios
+            .get("/api/getCourseComment", {
+                params: {
+                    id: this.CourseID,
+                    username: Cookies.get("username")
+                }
+            })
+            .then(res => {
+                if (res.data && res.data != "FAILURE")
+                    this.originComments = res.data;
+                this.sortComments();
+            });
+        // this.sortComments();
     },
     props: ["CourseID"],
     data: () => ({
@@ -263,8 +258,8 @@ export default {
             name: "线性代数",
             teacherName: "张宇杰",
             avg: 85.3,
-            scorelist: [87, 79, 65, 96, 93],
-            collect:true
+            scoreList: [1, 2, 5, 3, 3],
+            collect: true
         },
         scoreTable: [
             "给分情况",
@@ -273,146 +268,190 @@ export default {
             "作业数量",
             "考试难度"
         ],
-        comments: [
+        originComments: [
             {
-                id: 123,
+                id: 1,
                 courseId: "10405",
                 commenter: "乔洋",
                 like: true,
-                content:
-                    "'一般'一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般一般",
-                answerTo: "",
+                content: "这门课非常nice!!!!",
+                answerTo: -1,
                 likes: 100,
                 time: "2018-08-08",
-                scoreList: [79, 31, 67, 9, 18],
-                replies: [
-                    {
-                        courseId: "",
-                        answerTo: "乔洋",
-                        commenter: "张宇杰",
-                        content: "你在说废话",
-                        like: false,
-                        likes: 100,
-                        time: "2018-08-08",
-                        scoreList: [79, 31, 67, 9, 18]
-                    },
-                    {
-                        courseId: "",
-                        answerTo: "乔洋",
-                        commenter: "张宇杰",
-                        content: "你在说废话",
-                        likes: 100,
-                        time: "2018-08-08",
-                        scoreList: [79, 31, 67, 9, 18]
-                    }
-                ]
+                scoreList: [79, 31, 67, 9, 18]
             },
             {
+                id: 2,
                 courseId: "10405",
                 commenter: "乔洋",
-                content: "'一般'",
+                like: true,
+                content: "这门课非常nice!!!!",
+                answerTo: -1,
+                likes: 100,
+                time: "2018-08-09",
+                scoreList: [79, 31, 67, 9, 18]
+            },
+            {
+                id: 3,
+                courseId: "10405",
+                commenter: "乔洋",
+                like: true,
+                content: "这门课非常nice!!!!",
+                answerTo: -1,
+                likes: 100,
+                time: "2018-08-10",
+                scoreList: [79, 31, 67, 9, 18]
+            },
+            {
+                id: 4,
+                courseId: "10405",
+                commenter: "乔洋",
+                like: true,
+                content: "这门课非常nice!!!!",
+                answerTo: -1,
+                likes: 100,
+                time: "2018-08-11",
+                scoreList: [79, 31, 67, 9, 18]
+            },
+            {
+                id: 5,
+                courseId: "10405",
+                commenter: "乔洋",
+                like: true,
+                content: "回复!",
+                answerTo: 1,
+                likes: 100,
+                time: "2018-08-09",
+                scoreList: [0, 0, 0, 0, 0]
+            },
+            {
+                id: 6,
+                courseId: "10405",
+                commenter: "乔洋",
+                like: true,
+                content: "回复!",
+                answerTo: 5,
+                likes: 100,
+                time: "2018-08-10",
+                scoreList: [0, 0, 0, 0, 0]
+            },
+            {
+                id: 7,
+                courseId: "10405",
+                commenter: "乔洋",
+                like: true,
+                content: "回复!",
+                answerTo: 2,
                 likes: 100,
                 time: "2018-08-08",
-                scoreList: [79, 31, 67, 9, 18],
-                replies: [
-                    {
-                        courseId: "10405",
-                        commenter: "张宇杰",
-                        content: "你在说废话",
-                        likes: 100,
-                        time: "2018-08-08",
-                        scoreList: [79, 31, 67, 9, 18]
-                    }
-                ]
-            },
-            {
-                courseId: "10405",
-                commenter: "乔洋",
-                content: "'一般'",
-                likes: 0,
-                time: "2018-08-08",
-                scoreList: [79, 31, 67, 9, 18],
-                replies: [
-                    {
-                        courseId: "10405",
-                        commenter: "张宇杰",
-                        content: "你在说废话",
-                        likes: 100,
-                        time: "2018-08-08",
-                        scoreList: [79, 31, 67, 9, 18]
-                    }
-                ]
-            },
-            {
-                courseId: "10405",
-                commenter: "乔洋",
-                content: "'一般'",
-                likes: 100,
-                time: "2018-08-08",
-                scoreList: [79, 31, 67, 9, 18],
-                replies: [
-                    {
-                        courseId: "10405",
-                        commenter: "张宇杰",
-                        content: "你在说废话",
-                        likes: 100,
-                        time: "2018-08-08",
-                        scoreList: [79, 31, 67, 9, 18]
-                    }
-                ]
-            },
-            {
-                courseId: "10405",
-                commenter: "乔洋",
-                content: "'一般'",
-                likes: 100,
-                time: "2018-08-08",
-                scoreList: [79, 31, 67, 9, 18],
-                replies: [
-                    {
-                        courseId: "10405",
-                        commenter: "张宇杰",
-                        content: "你在说废话",
-                        likes: 100,
-                        time: "2018-08-08",
-                        scoreList: [79, 31, 67, 9, 18]
-                    }
-                ]
+                scoreList: [0, 0, 0, 0, 0]
             }
-        ]
+        ],
+        comments: []
     }),
     methods: {
-        sendComment() {
-            const toSendComment={
-                    courseId: this.courseInfo.id,
-                    commentId: this.originComment.id,
-                    commenter: Cookies.get("username"),
-                    answerTo: "",
-                    content: this.editingComment.content,
-                    scoreList: this.editingComment.scoreList,
-                    time: new Date().toLocaleString
+        setChart() {
+            let myChart = this.$echarts.init(document.getElementById("card"));
+            myChart.setOption({
+                radar: {
+                    // shape: 'circle',
+                    name: {
+                        textStyle: {
+                            color: "#fff",
+                            backgroundColor: "#999",
+                            borderRadius: 3,
+                            padding: [3, 5]
+                        }
+                    },
+                    indicator: [
+                        { name: "给分情况", max: 5 },
+                        { name: "知识深度", max: 5 },
+                        { name: "课堂氛围", max: 5 },
+                        { name: "作业数量", max: 5 },
+                        { name: "考试难度", max: 5 }
+                    ]
+                },
+                series: [
+                    {
+                        name: "课程信息",
+                        type: "radar",
+                        // areaStyle: {normal: {}},
+                        data: [
+                            {
+                                value: this.courseInfo.scoreList,
+                                name: "五维分布"
+                            }
+                        ]
+                    }
+                ]
+            });
+        },
+        sortComments() {
+            // this.originComments.sort((c1,c2)=>{
+            //     if(c1.time<c2.time)return 1;
+            //     else return -1;
+            // })
+            for (let i = 0; i < this.originComments.length; i++) {
+                const comment = this.originComments[i];
+                if (comment.answerTo == -1) {
+                    this.comments.push(comment);
                 }
+            }
+            for (let i = 0; i < this.originComments.length; i++) {
+                const reply = this.originComments[i];
+                let replies = new Set();
+                let r = reply;
+                while (r.answerTo > 0) {
+                    replies.add(r);
+                    r = this.originComments.find(c => c.id == r.answerTo);
+                }
+                let comment = r;
+                if (comment == reply) {
+                    comment.replies = new Set(); //如果是顶级评论, 看下一个
+                    continue;
+                }
+                if (!comment.replies) comment.replies = new Set();
+                comment.replies.add(...replies);
+            }
+            for (const comment of this.comments) {
+                let set = comment.replies;
+                comment.replies = [...set].sort((c1, c2) => {
+                    if (c1.time < c2.time) return -1;
+                    else return 1;
+                });
+            }
+        },
+        sendComment() {
+            const toSendComment = {
+                courseId: this.courseInfo.id,
+                commentId: this.originComment.id,
+                commenter: Cookies.get("username"),
+                answerTo: "",
+                content: this.editingComment.content,
+                scoreList: this.editingComment.scoreList,
+                time: new Date().toLocaleString
+            };
             this.axios
                 .post("/api/comment", toSendComment)
                 .then(res => {
-                    if(res.data=='SUCCESS'){
-                        comments.push[toSendComment]
-                    }else{
-                    console.log(res.data)
+                    if (res.data == "SUCCESS") {
+                        comments.push[toSendComment];
+                    } else {
+                        console.log(res.data);
                     }
                     this.editingComment = {
                         scoreList: [0, 0, 0, 0, 0]
                     };
                 })
                 .catch(err => {
-                    console.log(err)
+                    console.log(err);
                     this.editingComment = {
                         scoreList: [0, 0, 0, 0, 0]
                     };
                 });
         },
         sendReply() {
-             const toSendComment={
+            const toSendComment = {
                 courseId: "",
                 commentId: this.originComment.id,
                 commenter: Cookies.get("username"),
@@ -420,12 +459,11 @@ export default {
                 content: this.editingComment.content,
                 scoreList: this.editingComment.scoreList,
                 time: new Date().toLocaleString
-            }
-            this.axios.post("/api/comment",toSendComment).then(res=>{
-                if(res.data=='SUCCESS'){
-                    
+            };
+            this.axios.post("/api/comment", toSendComment).then(res => {
+                if (res.data == "SUCCESS") {
                 }
-            })
+            });
             this.editingComment = {
                 scoreList: [0, 0, 0, 0, 0]
             };
@@ -444,13 +482,19 @@ export default {
             this.axios.post("/api/cancelLike", {
                 commentId,
                 username: Cookies.get("username")
-            });
+            })
+            .then(res=>{
+                if(res.data=='SUCCESS')this.courseInfo.collect=false;
+            })
         },
         collect() {
             this.axios.post("/api/collect", {
                 courseId: this.courseInfo.id,
                 username: Cookies.get("username")
-            });
+            })
+            .then(res=>{
+                if(res.data=='SUCCESS')this.courseInfo.collect=true;
+            })
         },
         cancelCollect() {
             this.axios.post("/api/cancelCollect", {
