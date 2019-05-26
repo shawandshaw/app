@@ -39,11 +39,11 @@
               </v-form>
             </v-card-text>
             <v-card-actions>
-              <v-btn to="/yummy/register" flat>
+              <v-btn to="/yummy/register" flat >
                 <v-icon>arrow_back</v-icon>sign up
               </v-btn>
               <v-spacer></v-spacer>
-              <v-btn color="blue-grey darken-2" class="white--text" @click="submit">sign in</v-btn>
+              <v-btn color="#00f" class="white--text" @click="submit">sign in</v-btn>
             </v-card-actions>
           </v-card>
         </v-flex>
