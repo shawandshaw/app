@@ -15,10 +15,10 @@
                         <v-card-text>
                             <v-form>
                                 <v-text-field
-                                    v-model="Username"
-                                    prepend-icon="account_circle"
+                                    v-model="username"
+                                    prepend-icon="person"
                                     name="username"
-                                    label="username"
+                                    label="用户名"
                                     type="text"
                                 ></v-text-field>
                                 <v-text-field
@@ -26,14 +26,14 @@
                                     @keyup.enter="submit"
                                     prepend-icon="lock"
                                     name="password"
-                                    label="Password"
+                                    label="密码"
                                     id="password"
                                     type="password"
                                 ></v-text-field>
                             </v-form>
                         </v-card-text>
                         <v-card-actions>
-                            <v-btn @click="this.$router.push('/register')" flat>
+                            <v-btn @click="$router.push('/Register')" flat>
                                 <v-icon>arrow_back</v-icon>sign up
                             </v-btn>
                             <v-spacer></v-spacer>
