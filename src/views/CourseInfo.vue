@@ -14,8 +14,22 @@
 import mainlayout from '../layout/mainlayout'
 
     export default {
+
         name: "CourseInfo",
-        components:{mainlayout}
+        components:{mainlayout},
+        mounted(){
+
+        },
+        props:[
+          'CourseID'
+        ],
+        data: () => ({
+            CourseID:-1,
+
+        }),
+        methods:{
+
+        }
     }
 </script>
 

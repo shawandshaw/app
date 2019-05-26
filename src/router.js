@@ -25,9 +25,10 @@ export default new Router({
       component: () => import(/* webpackChunkName: "about" */ './views/HelloWorld.vue')
     },
       {
-          path: '/CourseInfo',
+          path: '/CourseInfo/:CourseID',
           name: 'CourseInfo',
-          component: CourseInfo
+          component: CourseInfo,
+          props:true
       },
       {
           path: '/CourseList',

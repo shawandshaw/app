@@ -8,27 +8,27 @@
                     app
             >
                 <v-list dense>
-                    <v-list-tile @click="">
+                    <v-list-tile @click="jumpToCourseList">
                         <v-list-tile-action>
                             <v-icon>dashboard</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-content>
-                            <v-list-tile-title>Dashboard</v-list-tile-title>
+                            <v-list-tile-title>课程列表</v-list-tile-title>
                         </v-list-tile-content>
                     </v-list-tile>
-                    <v-list-tile @click="">
+                    <v-list-tile @click="logout">
                         <v-list-tile-action>
                             <v-icon>settings</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-content>
-                            <v-list-tile-title>Settings</v-list-tile-title>
+                            <v-list-tile-title>退出登录</v-list-tile-title>
                         </v-list-tile-content>
                     </v-list-tile>
                 </v-list>
             </v-navigation-drawer>
             <v-toolbar app fixed clipped-left>
                 <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-                <v-toolbar-title>Application</v-toolbar-title>
+                <v-toolbar-title>{{title}}</v-toolbar-title>
             </v-toolbar>
             <v-content>
                 <slot>
@@ -43,14 +43,25 @@
 </template>
 
 <script>
+    import router from "../router";
+
     export default {
         name: "mainlayout",
         data: () => ({
-            drawer: true
+            drawer: false
         }),
 
         props: {
-            source: String
+            source: String,
+            title:String
+        },
+        methods:{
+            jumpToCourseList(){
+                this.$router.push("/CourseList")
+            },
+            logout(){
+
+            }
         }
     }
 </script>
