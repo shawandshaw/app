@@ -10,9 +10,9 @@ import axios from "axios";
 
 let config = {
   // eslint-disable-next-line no-undef
-  baseURL: process.env.baseURL || process.env.apiUrl || "",
+  baseURL: 'http://172.19.241.20:8082' || process.env.apiUrl || "",
   timeout: 60 * 1000, // Timeout
-  withCredentials: true, // Check cross-site Access-Control
+  withCredentials: false, // Check cross-site Access-Control
 };
 
 const _axios = axios.create(config);

@@ -61,22 +61,20 @@ export default {
     },
     methods: {
         submit: function() {
-            // const password = this.password;
-            // this.axios
-            //     .post("/api/login", {
-            //         username: this.username,
-            //         password: password
-            //     })
-            //     .then(res => {
-            //         if (res.data === "SUCCESS") {
-            //             this.$router.push("/CourseList");
-            //             Cookies.set('username',this.username)
-            //         } else {
-            //             alert(res.data);
-            //         }
-            //     });
-                         this.$router.push("/CourseList");
+            this.axios
+                .post("/api/login", {
+                    username: this.username,
+                    password: this.password
+                })
+                .then(res => {
+                    if (res.data === "SUCCESS") {
+                        this.$router.push("/CourseList");
                         Cookies.set('username',this.username)
+                         this.$router.push("/CourseList");
+                    } else {
+                        alert(res.data);
+                    }
+                });
         }
     }
 };

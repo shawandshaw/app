@@ -27,11 +27,11 @@
                                     <v-card flat>
                                         <v-card-text>
                                             <v-text-field
-                                                    label="课程编号" v-model="ID" :rules="notEmptyRules"/>
+                                                    label="课程编号" v-model="id" :rules="notEmptyRules"/>
                                             <v-text-field
                                                     label="课程名称" v-model="name" :rules="notEmptyRules"/>
                                             <v-text-field
-                                                    label="授课教师" v-model="teachername" :rules="notEmptyRules"/>
+                                                    label="授课教师" v-model="teacherName" :rules="notEmptyRules"/>
                                         </v-card-text>
                                         <v-card-actions>
                                             <v-layout row justify-space-around>
@@ -59,15 +59,28 @@
         components:{mainlayout},
         data () {
             return {
+                active:0,
                 operation:["新建课程"],
                 notEmptyRules: [v => !!v || "此项不能为空"],
                 name:'',
-                ID:'',
-                teachername:'',
+                id:'',
+                teacherName:'',
             }
         },
         methods:{
             submit(){
+                this.axios.post("/api/createCourse",{
+                    id:this.id,
+                    name:this.name,
+                    teacherName:this.teacherName
+                })
+                .then(res => {
+                        if (res.data === "SUCCESS") {
+                            alert('新建成功')
+                        } else {
+                            alert('新建失败');
+                        }
+                    });
 
             }
         }

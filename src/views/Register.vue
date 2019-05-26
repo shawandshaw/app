@@ -5,8 +5,7 @@
                 <v-flex xs12 sm8 md4>
                     <v-card class="elevation-12">
                         <v-toolbar dark color="blue-grey darken-2">
-                            <v-toolbar-title>SIGN UP
-                            </v-toolbar-title>
+                            <v-toolbar-title>SIGN UP</v-toolbar-title>
                             <v-spacer></v-spacer>
                             <v-btn icon large>
                                 <v-icon large>code</v-icon>
@@ -23,13 +22,31 @@
                                     label="用户名"
                                     type="text"
                                 ></v-text-field>
-                                 <v-text-field
+                                <v-text-field
                                     prepend-icon="home"
                                     v-model="student.school"
                                     :rules="notEmptyRules"
                                     required
                                     name="school"
                                     label="学校"
+                                    type="text"
+                                ></v-text-field>
+                                <v-text-field
+                                    prepend-icon="home"
+                                    v-model="student.colleage"
+                                    :rules="notEmptyRules"
+                                    required
+                                    name="school"
+                                    label="学院"
+                                    type="text"
+                                ></v-text-field>
+                                <v-text-field
+                                    prepend-icon="home"
+                                    v-model="student.major"
+                                    :rules="notEmptyRules"
+                                    required
+                                    name="school"
+                                    label="专业"
                                     type="text"
                                 ></v-text-field>
                                 <v-text-field
@@ -41,8 +58,7 @@
                                     label="学号"
                                     type="text"
                                 ></v-text-field>
-                               
-                                
+
                                 <v-text-field
                                     v-model="student.password"
                                     :rules="passwordRules"
@@ -89,7 +105,9 @@ export default {
             student: {
                 studentNumber: "",
                 username: "",
-                school:'',
+                school: "",
+                colleage: "",
+                major: "",
                 password: "",
                 passwordAgain: "",
                 passwordAgainRules: [
@@ -112,24 +130,24 @@ export default {
         studentSignUP() {
             if (this.$refs.form_student.validate()) {
                 // Native form submission is not yet supported
-                // this.axios
-                //     .post("/api/register", {
-                //         username: this.student.username,
-                //         studentNumber: this.student.studentNumber,
-                //         password: this.student.password
-                //     })
-                //     .then(res => {
-                //         if (res.data.status === "success") {
-                //             alert("注册成功，请前往邮箱认证后即可登录。");
-                //         } else {
-                //             alert(res.data.message);
-                //         }
-                //     });
-                this.$router.push('/')
+                this.axios
+                    .post("/api/register", {
+                        studentNumber: this.student.studentNumber,
+                        username: this.student.username,
+                        school: this.student.school,
+                        colleage: this.student.coleage,
+                        major: this.student.major,
+                        password: this.student.password
+                    })
+                    .then(res => {
+                        if (res.data === "SUCCESS") {
+                            this.$router.push("/");
+                        } else {
+                            alert('注册失败');
+                        }
+                    });
             }
-        },
-       
-       
+        }
     }
 };
 </script>
