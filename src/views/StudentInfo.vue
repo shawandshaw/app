@@ -115,11 +115,11 @@ export default {
         return {
             active: null,
             stuInfo: {
-                school: "test",
-                college: "testc",
-                major: "tesmt",
-                username: "123",
-                studentNumber: "123123131"
+                school: "",
+                college: "",
+                major: "",
+                username: Cookies.get("username"),
+                studentNumber: ""
             },
             password: "",
             newpassword: "",
