@@ -51,8 +51,10 @@
 
                 </slot>
             </v-content>
-            <v-footer app fixed>
-                <span>&copy; 2019</span>
+            <v-footer app fixed >
+                <v-layout justify-center>
+                <span>老干部活动中心&copy; 2019</span>
+                </v-layout>
             </v-footer>
         </v-app>
     </div>

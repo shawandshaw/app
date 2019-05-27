@@ -17,7 +17,6 @@
                     <br>
                 </div>
                 <v-toolbar
-                        class="mb-2"
                         color="lightgrey darken-5"
                         dark
                         flat
@@ -57,23 +56,23 @@
                                     </v-list-tile>
                                     <v-list-tile>
                                         <v-list-tile-content>给分情况:</v-list-tile-content>
-                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[0] }}</v-list-tile-content>
+                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[0].toFixed(2) }}</v-list-tile-content>
                                     </v-list-tile>
                                     <v-list-tile>
                                         <v-list-tile-content>知识深度:</v-list-tile-content>
-                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[1] }}</v-list-tile-content>
+                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[1].toFixed(2) }}</v-list-tile-content>
                                     </v-list-tile>
                                     <v-list-tile>
                                         <v-list-tile-content>课堂氛围:</v-list-tile-content>
-                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[2] }}</v-list-tile-content>
+                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[2].toFixed(2) }}</v-list-tile-content>
                                     </v-list-tile>
                                     <v-list-tile>
                                         <v-list-tile-content>作业数量:</v-list-tile-content>
-                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[3] }}</v-list-tile-content>
+                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[3].toFixed(2) }}</v-list-tile-content>
                                     </v-list-tile>
                                     <v-list-tile>
                                         <v-list-tile-content>考试难度:</v-list-tile-content>
-                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[4] }}</v-list-tile-content>
+                                        <v-list-tile-content class="align-end">{{ props.item.scoreList[4].toFixed(2) }}</v-list-tile-content>
                                     </v-list-tile>
                                 </v-list>
                             </v-card>

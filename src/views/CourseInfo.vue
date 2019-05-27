@@ -9,7 +9,7 @@
                                 <h4>{{ courseInfo.name }}</h4>
                                 <v-spacer></v-spacer>
                                 <v-btn flat @click="courseInfo.collect?cancelCollect():collect()">
-                                    <v-icon  :color="courseInfo.collect?'yellow':'grey'">star</v-icon>
+                                    <v-icon :color="courseInfo.collect?'yellow':'grey'">star</v-icon>
                                     <h4>{{courseInfo.collect?'取消收藏':'收藏'}}</h4>
                                 </v-btn>
                                 <v-btn flat @click="originComment={};dialog=true">
@@ -33,31 +33,31 @@
                                                 <v-list-tile-content>给分情况:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scoreList[0] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[0].toFixed(2) }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>知识深度:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scoreList[1] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[1].toFixed(2) }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>课堂氛围:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scoreList[2] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[2].toFixed(2) }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>作业数量:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scoreList[3] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[3].toFixed(2) }}</v-list-tile-content>
                                             </v-list-tile>
                                             <v-list-tile>
                                                 <v-list-tile-content>考试难度:</v-list-tile-content>
                                                 <v-list-tile-content
                                                     class="align-end"
-                                                >{{ courseInfo.scoreList[4] }}</v-list-tile-content>
+                                                >{{ courseInfo.scoreList[4].toFixed(2) }}</v-list-tile-content>
                                             </v-list-tile>
                                         </v-list>
                                     </v-flex>
@@ -391,6 +391,7 @@ export default {
             //     if(c1.time<c2.time)return 1;
             //     else return -1;
             // })
+            this.comments=[]
             for (let i = 0; i < this.originComments.length; i++) {
                 const comment = this.originComments[i];
                 if (comment.answerTo == -1) {
@@ -421,14 +422,13 @@ export default {
                 });
             }
             this.comments.sort((c1, c2) => {
-                    if (c1.likes > c2.likes) return -1;
-                    else return 1;
-                })
+                if (c1.likes > c2.likes) return -1;
+                else return 1;
+            });
         },
         sendComment() {
             const toSendComment = {
                 courseId: this.courseInfo.id,
-                id: this.originComment.id,
                 commenter: Cookies.get("username"),
                 answerTo: -1,
                 content: this.editingComment.content,
@@ -438,11 +438,18 @@ export default {
             this.axios
                 .post("/api/comment", toSendComment)
                 .then(res => {
-                    if (res.data == "SUCCESS") {
-                        this.comments.push(toSendComment);
-                    } else {
-                        console.log(res.data);
-                    }
+                    this.axios
+                        .get("/api/getCourseComment", {
+                            params: {
+                                courseId: this.CourseID,
+                                username: Cookies.get("username")
+                            }
+                        })
+                        .then(res => {
+                            if (res.data && res.data != "FAILURE")
+                                this.originComments = res.data;
+                            this.sortComments();
+                        });
                     this.editingComment = {
                         scoreList: [0, 0, 0, 0, 0]
                     };
@@ -466,13 +473,21 @@ export default {
             };
             this.axios.post("/api/comment", toSendComment).then(res => {
                 if (res.data == "SUCCESS") {
-                    let parentComment=this.originComment;
-                    while(parentComment.answerTo!=-1){
-                        parentComment=this.originComments.find(c=>c.id=parentComment.answerTo)
-                    }
-                    console.log(parentComment)
-                    if(!parentComment.replies)parentComment.replies=[];
-                    parentComment.replies.push(toSendComment);
+                    this.axios
+                        .get("/api/getCourseComment", {
+                            params: {
+                                courseId: this.CourseID,
+                                username: Cookies.get("username")
+                            }
+                        })
+                        .then(res => {
+                            if (res.data && res.data != "FAILURE")
+                                this.originComments = res.data;
+                            this.sortComments();
+                        });
+                    this.editingComment = {
+                        scoreList: [0, 0, 0, 0, 0]  
+                    };
                 }
             });
             this.editingComment = {
@@ -484,26 +499,30 @@ export default {
             else this.cancelLike(comment);
         },
         like(comment) {
-            this.axios.post("/api/like", {
-                commentId:comment.id,
-                username: Cookies.get("username")
-            }).then(res=>{
-                if(res.data=='SUCCESS'){
-                    comment.like=true;
-                    comment.likes++;
-                }
-            })
+            this.axios
+                .post("/api/like", {
+                    commentId: comment.id,
+                    username: Cookies.get("username")
+                })
+                .then(res => {
+                    if (res.data == "SUCCESS") {
+                        comment.like = true;
+                        comment.likes++;
+                    }
+                });
         },
         cancelLike(comment) {
-            this.axios.post("/api/cancelLike", {
-                commentId:comment.id,
-                username: Cookies.get("username")
-            }).then(res=>{
-                if(res.data=='SUCCESS'){
-                    comment.like=false;
-                    comment.likes--;
-                }
-            })
+            this.axios
+                .post("/api/cancelLike", {
+                    commentId: comment.id,
+                    username: Cookies.get("username")
+                })
+                .then(res => {
+                    if (res.data == "SUCCESS") {
+                        comment.like = false;
+                        comment.likes--;
+                    }
+                });
         },
         collect() {
             this.axios

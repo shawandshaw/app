@@ -33,7 +33,7 @@
                                 ></v-text-field>
                                 <v-text-field
                                     prepend-icon="home"
-                                    v-model="student.colleage"
+                                    v-model="student.college"
                                     :rules="notEmptyRules"
                                     required
                                     name="school"
@@ -106,7 +106,7 @@ export default {
                 studentNumber: "",
                 username: "",
                 school: "",
-                colleage: "",
+                college: "",
                 major: "",
                 password: "",
                 passwordAgain: "",
