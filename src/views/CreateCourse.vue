@@ -4,7 +4,7 @@
             <v-layout align-center row fill-height>
                 <v-flex xs12 sm6 offset-sm3>
                     <v-card>
-                        <v-tabs v-model="active" color="darkcyan" dark slider-color="yellow">
+                        <v-tabs v-model="active" color="#C1FFC1"  slider-color="yellow">
                             <v-tab v-for="n in 1" :key="n" ripple>{{ operation[n-1] }}</v-tab>
                             <v-tab-item v-for="n in 2" :key="n">
                                 <v-layout row justify-space-around>
@@ -31,7 +31,7 @@
                                                 <v-layout row justify-space-around>
                                                     <v-btn
                                                         flat
-                                                        color="orange"
+                                                        color="blue"
                                                         @click="submit()"
                                                     >确认提交</v-btn>
                                                 </v-layout>
