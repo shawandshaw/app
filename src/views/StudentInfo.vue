@@ -5,7 +5,7 @@
                 <v-layout align-center row fill-height>
                     <v-flex xs12 sm6 offset-sm3>
                         <v-card>
-                            <v-tabs v-model="active" color="darkcyan" dark slider-color="yellow">
+                            <v-tabs v-model="active" color="grey" slider-color="yellow">
                                 <v-tab v-for="n in 2" :key="n" ripple>{{ operation[n-1] }}</v-tab>
                                 <v-tab-item v-for="n in 2" :key="n">
                                     <v-layout row justify-space-around>
@@ -21,8 +21,10 @@
                                                         label="学号"
                                                         v-model="stuInfo.studentNumber"
                                                         :rules="notEmptyRules"
+                                                        color="blue"
                                                     />
                                                     <v-text-field
+                                                            color="blue"
                                                         label="就读学校"
                                                         v-model="stuInfo.school"
                                                         :rules="notEmptyRules"
@@ -31,11 +33,13 @@
                                                         label="所在学院"
                                                         v-model="stuInfo.college"
                                                         :rules="notEmptyRules"
+                                                        color="blue"
                                                     />
                                                     <v-text-field
                                                         label="就读专业"
                                                         v-model="stuInfo.major"
                                                         :rules="notEmptyRules"
+                                                        color="blue"
                                                     />
                                                 </v-card-text>
                                                 <v-card-actions>
@@ -54,18 +58,21 @@
                                                         label="输入原密码"
                                                         v-model="password"
                                                         type="password"
+                                                        color="blue"
                                                     />
                                                     <v-text-field
                                                         label="输入新密码"
                                                         v-model="newpassword"
                                                         type="password"
                                                         :rules="passwordRules"
+                                                        color="blue"
                                                     />
                                                     <v-text-field
                                                         label="确认新密码"
                                                         v-model="newpasswordconfirm"
                                                         type="password"
                                                         :rules="passwordAgainRules"
+                                                        color="blue"
                                                     />
                                                 </v-card-text>
                                                 <v-card-actions>

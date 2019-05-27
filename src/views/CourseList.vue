@@ -5,6 +5,7 @@
 
 
             <v-container fluid grid-list-md v-if="ifshow">
+
                 <div>
                     <v-alert
                             :value="showMSG"
@@ -17,20 +18,36 @@
                     <br>
                 </div>
                 <v-toolbar
-                        color="lightgrey darken-5"
-                        dark
+                        color="#fafafa"
+
                         flat
                 >
-                    <v-flex xs12 sm2 d-flex>
-                        <v-select
-                                :items="order"
-                                label="排序方式"
-                                v-model="sortType"
-                                @change="sort()"
-                        ></v-select>
-                    </v-flex>
+                    <v-layout >
+                        <!--<v-spacer >-->
+
+                        <!--</v-spacer>-->
+                        <v-flex xs12 sm2 d-flex >
+                            <v-select
+                                    :items="order"
+                                    label="排序方式"
+                                    v-model="sortType"
+                                    color="teal"
+                                    @change="sort()"
+                            ></v-select>
+                        </v-flex>
+                        <!--<v-flex xs12 sm2 d-flex >-->
+                            <!--<v-select-->
+                                    <!--:items="order"-->
+                                    <!--label="排序方式"-->
+                                    <!--v-model="sortType"-->
+                                    <!--@change="sort()"-->
+                            <!--&gt;</v-select>-->
+                        <!--</v-flex>-->
+                    </v-layout>
+
 
                 </v-toolbar>
+                <br>
                 <v-data-iterator
                         :items="courses"
                         :rows-per-page-items="rowsPerPageItems"
@@ -46,7 +63,7 @@
                                 md4
                                 lg3
                         >
-                            <v-card @click="selectCourse(props.item.id)" >
+                            <v-card @click="selectCourse(props.item.id)" hover=20 >
                                 <v-card-title><h4>{{ props.item.name }}</h4></v-card-title>
                                 <v-divider></v-divider>
                                 <v-list dense>
@@ -159,6 +176,7 @@ import Cookies from "js-cookie";
                         else return 1;
                     })
 
+
                     // for(let i=0;i<this.courses.length;i++){
 
                     //     for (let j=i;j<this.courses.length;j++){
@@ -172,6 +190,12 @@ import Cookies from "js-cookie";
                     //     }
                     // }
 
+                }
+                else{
+                    this.courses.sort((c1,c2)=>{
+                        if(c1.recommend>c2.recommend)return -1;
+                        else return 1;
+                    })
                 }
                 this.$nextTick(() => {
                     this.ifshow=true;
