@@ -451,13 +451,13 @@ export default {
                             this.sortComments();
                         });
                     this.editingComment = {
-                        scoreList: [0, 0, 0, 0, 0]
+                        scoreList: [5, 5, 5, 5, 5]
                     };
                 })
                 .catch(err => {
                     console.log(err);
                     this.editingComment = {
-                        scoreList: [0, 0, 0, 0, 0]
+                        scoreList: [5, 5, 5, 5, 5]
                     };
                 });
         },
@@ -486,12 +486,12 @@ export default {
                             this.sortComments();
                         });
                     this.editingComment = {
-                        scoreList: [0, 0, 0, 0, 0]  
+                        scoreList: [5, 5, 5, 5, 5]  
                     };
                 }
             });
             this.editingComment = {
-                scoreList: [0, 0, 0, 0, 0]
+                scoreList: [5, 5, 5, 5, 5]
             };
         },
         likeOrDislike(comment) {
