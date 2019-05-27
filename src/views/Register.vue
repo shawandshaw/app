@@ -135,7 +135,7 @@ export default {
                         studentNumber: this.student.studentNumber,
                         username: this.student.username,
                         school: this.student.school,
-                        colleage: this.student.coleage,
+                        college: this.student.college,
                         major: this.student.major,
                         password: this.student.password
                     })

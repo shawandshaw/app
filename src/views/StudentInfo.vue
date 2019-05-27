@@ -14,27 +14,27 @@
                                                 <v-card-text>
                                                     <v-text-field
                                                         label="用户名"
-                                                        v-model="username"
+                                                        v-model="stuInfo.username"
                                                         readonly
                                                     />
                                                     <v-text-field
                                                         label="学号"
-                                                        v-model="studentNumber"
+                                                        v-model="stuInfo.studentNumber"
                                                         :rules="notEmptyRules"
                                                     />
                                                     <v-text-field
                                                         label="就读学校"
-                                                        v-model="school"
+                                                        v-model="stuInfo.school"
                                                         :rules="notEmptyRules"
                                                     />
                                                     <v-text-field
                                                         label="所在学院"
-                                                        v-model="college"
+                                                        v-model="stuInfo.college"
                                                         :rules="notEmptyRules"
                                                     />
                                                     <v-text-field
                                                         label="就读专业"
-                                                        v-model="major"
+                                                        v-model="stuInfo.major"
                                                         :rules="notEmptyRules"
                                                     />
                                                 </v-card-text>
@@ -92,30 +92,35 @@
 
 <script>
 import mainlayout from "../layout/mainlayout";
+import Cookies from "js-cookie";
 export default {
     name: "StudentInfo",
     components: { mainlayout },
-    mounted() {
+    created() {
         this.axios
-            .post("/api/getStudentInfo", {
-                username: this.username
+            .get("/api/getStudentInfo", {
+                params: {
+                    username: Cookies.get('username')
+                }
             })
             .then(res => {
-                if (res.data.status === "success") {
-                    alert("hhh");
+                if (res.data) {
+                    this.stuInfo = res.data;
                 } else {
-                    alert(res.data.message);
+                    alert("获取个人信息失败");
                 }
             });
     },
     data() {
         return {
             active: null,
-            school: "test",
-            college: "testc",
-            major: "tesmt",
-            username: "123",
-            studentNumber: "123123131",
+            stuInfo: {
+                school: "test",
+                college: "testc",
+                major: "tesmt",
+                username: "123",
+                studentNumber: "123123131"
+            },
             password: "",
             newpassword: "",
             newpasswordconfirm: "",
@@ -139,32 +144,30 @@ export default {
         updateInfo() {
             this.axios
                 .post("/api/updateStudentInfo", {
-                    username: this.username,
-                    studentNumber: this.studentNumber,
-                    college: this.college,
-                    major: this.major,
-                    school: this.school
+                    username: this.stuInfo.username,
+                    studentNumber: this.stuInfo.studentNumber,
+                    college: this.stuInfo.college,
+                    major: this.stuInfo.major,
+                    school: this.stuInfo.school
                 })
                 .then(res => {
-                    if (res.data.status === "success") {
-                        alert("hhh");
+                    if (res.data=== "SUCCESS") {
                     } else {
-                        alert(res.data.message);
+                        alert("修改失败");
                     }
                 });
         },
         updatePassword() {
             this.axios
                 .post("/api/updateStudentPassword", {
-                    username: this.username,
+                    username: this.stuInfo.username,
                     password: this.password,
                     school: this.newpassword
                 })
                 .then(res => {
                     if (res.data.status === "success") {
-                        alert("hhh");
                     } else {
-                        alert(res.data.message);
+                        alert('修改失败');
                     }
                 });
         }

@@ -43,8 +43,12 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
     export default {
         name: "adminlayout",
+        created(){
+            if(!Cookies.get('username'))this.$router.push('/')
+        },
      data: () => ({
          drawer: false
      }),
@@ -58,6 +62,7 @@
             this.$router.push("/AdminMain")
         },
         logout(){
+            Cookies.remove('username')
             this.$router.push("/")
         },
     }

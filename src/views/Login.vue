@@ -68,9 +68,14 @@ export default {
                 })
                 .then(res => {
                     if (res.data === "SUCCESS") {
-                        this.$router.push("/CourseList");
-                        Cookies.set('username',this.username)
-                         this.$router.push("/CourseList");
+                        if(this.username === "admin"){
+                            Cookies.set('username',this.username)
+                            this.$router.push("/AdminMain");
+                        }
+                        else{
+                            Cookies.set('username',this.username)
+                            this.$router.push("/CourseList");
+                        }
                     } else {
                         alert(res.data);
                     }

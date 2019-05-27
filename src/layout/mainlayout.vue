@@ -59,9 +59,12 @@
 </template>
 
 <script>
-
+import Cookies from 'js-cookie'
     export default {
         name: "mainlayout",
+        created(){
+            if(!Cookies.get('username'))this.$router.push('/')
+        },
         data: () => ({
             drawer: false
         }),
@@ -78,6 +81,7 @@
                 this.$router.push("/CreateCourse")
             },
             logout(){
+                Cookies.remove('username')
                 this.$router.push("/")
             },
             jumpToStudentInfo(){

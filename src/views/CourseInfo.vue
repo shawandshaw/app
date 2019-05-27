@@ -9,7 +9,7 @@
                                 <h4>{{ courseInfo.name }}</h4>
                                 <v-spacer></v-spacer>
                                 <v-btn flat @click="courseInfo.collect?cancelCollect():collect()">
-                                    <v-icon>star</v-icon>
+                                    <v-icon :color="courseInfo.collect?'yellow':'white'">star</v-icon>
                                     <h4>{{courseInfo.collect?'取消收藏':'收藏'}}</h4>
                                 </v-btn>
                                 <v-btn flat @click="originComment={};dialog=true">
@@ -122,7 +122,7 @@
                                                             color="lime"
                                                             small
                                                             half-increments
-                                                            :value="score/20"
+                                                            :value="score"
                                                         ></v-rating>
                                                         <span>{{score}}</span>
                                                     </v-layout>
@@ -235,7 +235,7 @@ export default {
         this.axios
             .get("/api/getCourseComment", {
                 params: {
-                    id: this.CourseID,
+                    courseId: this.CourseID,
                     username: Cookies.get("username")
                 }
             })
@@ -251,7 +251,7 @@ export default {
         dialog: false,
         originComment: {},
         editingComment: {
-            scoreList: [0, 0, 0, 0, 0]
+            scoreList: [5, 5, 5, 5, 5]
         },
         courseInfo: {
             id: 123456,
@@ -420,13 +420,17 @@ export default {
                     else return 1;
                 });
             }
+            this.comments.sort((c1, c2) => {
+                    if (c1.likes > c2.likes) return -1;
+                    else return 1;
+                })
         },
         sendComment() {
             const toSendComment = {
                 courseId: this.courseInfo.id,
                 commentId: this.originComment.id,
                 commenter: Cookies.get("username"),
-                answerTo: "",
+                answerTo: -1,
                 content: this.editingComment.content,
                 scoreList: this.editingComment.scoreList,
                 time: new Date().toLocaleString
@@ -435,7 +439,7 @@ export default {
                 .post("/api/comment", toSendComment)
                 .then(res => {
                     if (res.data == "SUCCESS") {
-                        comments.push[toSendComment];
+                        this.comments.push(toSendComment);
                     } else {
                         console.log(res.data);
                     }
@@ -452,16 +456,22 @@ export default {
         },
         sendReply() {
             const toSendComment = {
-                courseId: "",
+                courseId: this.courseInfo.id,
                 commentId: this.originComment.id,
                 commenter: Cookies.get("username"),
-                answerTo: this.originComment.commenter,
+                answerTo: this.originComment.id,
                 content: this.editingComment.content,
                 scoreList: this.editingComment.scoreList,
                 time: new Date().toLocaleString
             };
             this.axios.post("/api/comment", toSendComment).then(res => {
                 if (res.data == "SUCCESS") {
+                    let parentComment=this.originComment;
+                    while(parentComment.answerTo!=-1){
+                        parentComment=this.originComments.find(c=>c.id=parentComment.answerTo)
+                    }
+                    if(!parentComment.replies)parentComment.replies=[];
+                    parentComment.replies.push(toSendComment);
                 }
             });
             this.editingComment = {
@@ -469,38 +479,50 @@ export default {
             };
         },
         likeOrDislike(comment) {
-            if (!comment.like) this.like(comment.id);
-            else this.cancelLike(comment.id);
+            if (!comment.like) this.like(comment);
+            else this.cancelLike(comment);
         },
-        like(commentId) {
+        like(comment) {
             this.axios.post("/api/like", {
-                commentId,
+                commentId:comment.id,
                 username: Cookies.get("username")
-            });
-        },
-        cancelLike(commentId) {
-            this.axios.post("/api/cancelLike", {
-                commentId,
-                username: Cookies.get("username")
+            }).then(res=>{
+                if(res.data=='SUCCESS'){
+                    comment.like=true;
+                    comment.likes++;
+                }
             })
-            .then(res=>{
-                if(res.data=='SUCCESS')this.courseInfo.collect=false;
+        },
+        cancelLike(comment) {
+            this.axios.post("/api/cancelLike", {
+                commentId:comment.id,
+                username: Cookies.get("username")
+            }).then(res=>{
+                if(res.data=='SUCCESS'){
+                    comment.like=false;
+                    comment.likes--;
+                }
             })
         },
         collect() {
-            this.axios.post("/api/collect", {
-                courseId: this.courseInfo.id,
-                username: Cookies.get("username")
-            })
-            .then(res=>{
-                if(res.data=='SUCCESS')this.courseInfo.collect=true;
-            })
+            this.axios
+                .post("/api/collect", {
+                    courseId: this.courseInfo.id,
+                    username: Cookies.get("username")
+                })
+                .then(res => {
+                    if (res.data === "SUCCESS") this.courseInfo.collect = true;
+                });
         },
         cancelCollect() {
-            this.axios.post("/api/cancelCollect", {
-                courseId: this.courseInfo.id,
-                username: Cookies.get("username")
-            });
+            this.axios
+                .post("/api/cancelCollect", {
+                    courseId: this.courseInfo.id,
+                    username: Cookies.get("username")
+                })
+                .then(res => {
+                    this.courseInfo.collect = false;
+                });
         }
     }
 };
