@@ -11,6 +11,7 @@ import axios from "axios";
 let config = {
   // eslint-disable-next-line no-undef
   baseURL: 'http://172.19.241.20:8082' || process.env.apiUrl || "",
+  // baseURL: 'http://172.28.110.201:8082' || process.env.apiUrl || "",
   timeout: 60 * 1000, // Timeout
   withCredentials: false, // Check cross-site Access-Control
 };

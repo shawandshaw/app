@@ -9,7 +9,7 @@
                                 <h4>{{ courseInfo.name }}</h4>
                                 <v-spacer></v-spacer>
                                 <v-btn flat @click="courseInfo.collect?cancelCollect():collect()">
-                                    <v-icon :color="courseInfo.collect?'yellow':'white'">star</v-icon>
+                                    <v-icon  :color="courseInfo.collect?'yellow':'grey'">star</v-icon>
                                     <h4>{{courseInfo.collect?'取消收藏':'收藏'}}</h4>
                                 </v-btn>
                                 <v-btn flat @click="originComment={};dialog=true">
@@ -102,7 +102,7 @@
                                                                 @click.stop="likeOrDislike(comment)"
                                                             >
                                                                 <v-icon
-                                                                    :color="comment.like?'red':'white'"
+                                                                    :color="comment.like?'red':'gray'"
                                                                 >thumb_up</v-icon>
                                                                 {{comment.likes||'赞'}}
                                                             </v-btn>
@@ -145,7 +145,7 @@
 
                                                         <v-btn icon>
                                                             <v-icon
-                                                                :color="reply.like?'red':'white'"
+                                                                :color="reply.like?'red':'gray'"
                                                                 @click.stop="likeOrDislike(reply)"
                                                             >thumb_up</v-icon>
                                                             {{reply.likes||'赞'}}
@@ -428,12 +428,12 @@ export default {
         sendComment() {
             const toSendComment = {
                 courseId: this.courseInfo.id,
-                commentId: this.originComment.id,
+                id: this.originComment.id,
                 commenter: Cookies.get("username"),
                 answerTo: -1,
                 content: this.editingComment.content,
                 scoreList: this.editingComment.scoreList,
-                time: new Date().toLocaleString
+                time: new Date().toLocaleString()
             };
             this.axios
                 .post("/api/comment", toSendComment)
@@ -457,12 +457,12 @@ export default {
         sendReply() {
             const toSendComment = {
                 courseId: this.courseInfo.id,
-                commentId: this.originComment.id,
+                id: this.originComment.id,
                 commenter: Cookies.get("username"),
                 answerTo: this.originComment.id,
                 content: this.editingComment.content,
                 scoreList: this.editingComment.scoreList,
-                time: new Date().toLocaleString
+                time: new Date().toLocaleString()
             };
             this.axios.post("/api/comment", toSendComment).then(res => {
                 if (res.data == "SUCCESS") {
@@ -470,6 +470,7 @@ export default {
                     while(parentComment.answerTo!=-1){
                         parentComment=this.originComments.find(c=>c.id=parentComment.answerTo)
                     }
+                    console.log(parentComment)
                     if(!parentComment.replies)parentComment.replies=[];
                     parentComment.replies.push(toSendComment);
                 }
